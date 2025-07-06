@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trade-surveillance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trade-surveillance
+  template:
+    metadata:
+      labels:
+        app: trade-surveillance
+    spec:
+      containers:
+      - name: spark-job
+        image: bitnami/spark:latest
+        command: ["/bin/bash", "-c"]
+        args: ["/opt/bitnami/spark/bin/spark-submit /app/streaming_job.py"]
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+      volumes:
+      - name: app-code
+        hostPath:
+          path: /mnt/app
